@@ -1,0 +1,118 @@
+site_name: Filament Stock
+site_url: https://matata86.github.io/filament-stock/
+site_description: A filament stock in grams for Bambu Lab printers in Home Assistant
+repo_url: https://github.com/matata86/filament-stock
+repo_name: matata86/filament-stock
+edit_uri: edit/master/docs/
+copyright: Copyright &copy; 2026 matata86, MIT license
+
+theme:
+  name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: orange
+      accent: orange
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: orange
+      accent: orange
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - toc.follow
+    - content.code.copy
+
+plugins:
+  - search
+  - i18n:
+      docs_structure: folder
+      reconfigure_material: true
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: cs
+          name: Čeština
+          build: true
+          site_description: Sklad filamentů v gramech pro tiskárny Bambu Lab v Home Assistantu
+          nav_translations:
+            Home: Úvod
+            Getting started: Začínáme
+            Installation: Instalace
+            Bambu profiles: Profily Bambu
+            Using it: Používání
+            Dashboard card: Karta na dashboard
+            Barcodes and labels: Čárové kódy a štítky
+            How deduction works: Jak funguje odečet
+            Entities and options: Entity a volby
+            FAQ: Časté otázky
+            Reference: Reference
+            Websocket API: Websocket API
+            Storage format: Formát úložiště
+            Changelog: Změny
+            Support: Podpora
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.snippets
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/matata86/filament-stock
+      name: GitHub
+    - icon: simple/kofi
+      link: https://ko-fi.com/matata86
+      name: Ko-fi
+    - icon: fontawesome/brands/paypal
+      link: https://paypal.me/matata86
+      name: PayPal
+    - icon: fontawesome/brands/bitcoin
+      link: https://matata86.github.io/filament-stock/support/
+      name: Bitcoin
+
+nav:
+  - Home: index.md
+  - Getting started:
+      - Installation: installation.md
+      - Bambu profiles: profiles.md
+  - Using it:
+      - Dashboard card: card.md
+      - Barcodes and labels: barcodes.md
+      - How deduction works: deduction.md
+      - Entities and options: entities.md
+  - FAQ: faq.md
+  - Reference:
+      - Websocket API: reference/websocket-api.md
+      - Storage format: reference/storage.md
+  - Changelog: changelog.md
+  - Support: support.md

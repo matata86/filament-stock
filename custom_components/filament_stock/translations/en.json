@@ -1,0 +1,75 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Filament Stock",
+        "description": "Pick the printer added by the Bambu Lab (ha-bambulab) integration.",
+        "data": {
+          "printer_device": "Printer"
+        }
+      }
+    },
+    "error": {
+      "not_printer": "This device is not a printer (no print weight sensor). Pick the printer itself, not the AMS."
+    },
+    "abort": {
+      "already_configured": "This printer is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "menu_options": {
+          "edit_item": "Rename filament",
+          "remove_item": "Remove filament",
+          "settings": "Settings"
+        }
+      },
+      "remove_item": {
+        "title": "Remove filament",
+        "data": {
+          "items": "Filaments to remove"
+        }
+      },
+      "settings": {
+        "data": {
+          "waste_percent": "Extra for waste (purge, failed starts)",
+          "low_threshold_g": "Low stock threshold",
+          "spool_weight_g": "Weight of a new spool",
+          "ai_task_entity": "AI to read the label (unknown barcode)"
+        },
+        "data_description": {
+          "ai_task_entity": "Optional: an AI task entity that accepts images. When a barcode is unknown, the panel offers to photograph the label and the AI suggests the filament."
+        }
+      },
+      "edit_item": {
+        "title": "Rename filament",
+        "description": "Filaments come from the Bambu profiles (AMS slots, your own profiles in Bambu Studio). Here you only override the name shown in Home Assistant. Leave empty to use the name from Bambu.",
+        "data": {
+          "item": "Filament",
+          "name": "Custom name (empty = from Bambu)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "number": {
+      "stock": {
+        "name": "{item}"
+      }
+    },
+    "button": {
+      "add_spool": {
+        "name": "{item} add spool"
+      },
+      "sync": {
+        "name": "Sync with Bambu"
+      }
+    },
+    "binary_sensor": {
+      "low": {
+        "name": "{item} low"
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Filament spool with a stock gauge. Render: brand-src/render.sh -->
+  <defs>
+    <radialGradient id="fil" cx="50%" cy="50%" r="50%">
+      <stop offset="45%" stop-color="#FF9A3C"/>
+      <stop offset="80%" stop-color="#FF6A13"/>
+      <stop offset="100%" stop-color="#E0520A"/>
+    </radialGradient>
+    <linearGradient id="flange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--fl1)"/>
+      <stop offset="1" stop-color="var(--fl2)"/>
+    </linearGradient>
+    <style>
+      svg { --fl1: #54646F; --fl2: #37444D; --hub: #ECEFF1; }
+      svg.dark { --fl1: #B8C4CC; --fl2: #8C9AA4; --hub: #263238; }
+    </style>
+  </defs>
+
+  <!-- stock gauge: track + level (about 70 %) -->
+  <circle cx="256" cy="256" r="236" fill="none" stroke="var(--fl1)" stroke-opacity="0.25" stroke-width="22"/>
+  <circle cx="256" cy="256" r="236" fill="none" stroke="#2EB872" stroke-width="22" stroke-linecap="round"
+          stroke-dasharray="1040 1483" transform="rotate(-90 256 256)"/>
+
+  <!-- spool flange -->
+  <circle cx="256" cy="256" r="200" fill="url(#flange)"/>
+  <!-- wound filament -->
+  <circle cx="256" cy="256" r="176" fill="url(#fil)"/>
+  <g fill="none" stroke="#B5410A" stroke-opacity="0.35" stroke-width="3">
+    <circle cx="256" cy="256" r="160"/>
+    <circle cx="256" cy="256" r="144"/>
+    <circle cx="256" cy="256" r="128"/>
+    <circle cx="256" cy="256" r="112"/>
+  </g>
+  <!-- highlight -->
+  <path d="M120 180 A160 160 0 0 1 220 100" fill="none" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="12" stroke-linecap="round"/>
+
+  <!-- hub -->
+  <circle cx="256" cy="256" r="86" fill="url(#flange)"/>
+  <circle cx="256" cy="256" r="34" fill="var(--hub)"/>
+  <g fill="var(--hub)">
+    <circle cx="256" cy="198" r="13"/>
+    <circle cx="306" cy="285" r="13"/>
+    <circle cx="206" cy="285" r="13"/>
+  </g>
+</svg>

@@ -1,0 +1,14 @@
+{
+  "domain": "filament_stock",
+  "name": "Filament Stock",
+  "after_dependencies": ["bambu_lab"],
+  "codeowners": ["@matata86"],
+  "config_flow": true,
+  "dependencies": ["frontend", "http", "panel_custom", "persistent_notification", "websocket_api"],
+  "documentation": "https://github.com/matata86/filament-stock",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/matata86/filament-stock/issues",
+  "requirements": [],
+  "version": "0.7.1"
+}

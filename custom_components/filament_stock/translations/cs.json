@@ -1,0 +1,75 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Sklad filamentů",
+        "description": "Vyberte tiskárnu přidanou integrací Bambu Lab (ha-bambulab).",
+        "data": {
+          "printer_device": "Tiskárna"
+        }
+      }
+    },
+    "error": {
+      "not_printer": "Toto zařízení není tiskárna (chybí senzor hmotnosti tisku). Vyberte přímo tiskárnu, ne AMS."
+    },
+    "abort": {
+      "already_configured": "Tato tiskárna je už nastavená."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "menu_options": {
+          "edit_item": "Přejmenovat filament",
+          "remove_item": "Odebrat filament",
+          "settings": "Nastavení"
+        }
+      },
+      "remove_item": {
+        "title": "Odebrat filament",
+        "data": {
+          "items": "Filamenty k odebrání"
+        }
+      },
+      "settings": {
+        "data": {
+          "waste_percent": "Přirážka na odpad (purge, nepovedené starty)",
+          "low_threshold_g": "Práh nízkého stavu",
+          "spool_weight_g": "Hmotnost nové cívky",
+          "ai_task_entity": "AI na čtení štítku (neznámý čárový kód)"
+        },
+        "data_description": {
+          "ai_task_entity": "Volitelné: entita AI úkolu, která umí obrázky. Když čárový kód není známý, panel nabídne vyfotit štítek a AI navrhne filament."
+        }
+      },
+      "edit_item": {
+        "title": "Přejmenovat filament",
+        "description": "Filamenty se načítají z profilů Bambu (slot AMS, vlastní profily v Bambu Studiu). Tady jen přepíšete název zobrazený v Home Assistantu. Prázdné pole vrátí název z Bambu.",
+        "data": {
+          "item": "Filament",
+          "name": "Vlastní název (prázdné = z Bambu)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "number": {
+      "stock": {
+        "name": "{item}"
+      }
+    },
+    "button": {
+      "add_spool": {
+        "name": "{item} přidat cívku"
+      },
+      "sync": {
+        "name": "Synchronizovat s Bambu"
+      }
+    },
+    "binary_sensor": {
+      "low": {
+        "name": "{item} dochází"
+      }
+    }
+  }
+}
