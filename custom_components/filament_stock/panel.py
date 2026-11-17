@@ -295,7 +295,7 @@ def ws_barcode(hass: HomeAssistant, connection, msg) -> None:
 @websocket_api.websocket_command({vol.Required("type"): f"{DOMAIN}/sync"})
 @websocket_api.async_response
 async def ws_sync(hass: HomeAssistant, connection, msg) -> None:
-    """Read the user's profiles from Bambu Cloud now (the card's sync button), not in 15 minutes."""
+    """Read the profile list from ha-bambulab now (the card's reload button), not in 15 minutes."""
     total = {"profiles": 0, "new": 0, "changed": 0}
     for stock in _stocks(hass):
         result = await stock.async_sync_profiles()

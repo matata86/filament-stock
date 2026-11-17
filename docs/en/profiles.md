@@ -18,13 +18,15 @@ A custom profile needs its own `filament_id`. In Bambu Studio create it with **C
 
 A profile saved with **Save as** from a Generic profile inherits the id of its base (for example `GFG99` or `GFU99`). ha-bambulab does not list it and a slot cannot tell it from Generic, so it never becomes an item of its own.
 
-## Synchronisation
+## Reloading profiles
 
-Your own profiles are read again:
+Filament Stock reads the profile list through the public `bambu_lab.get_filament_data` service of ha-bambulab:
 
 - when Home Assistant starts,
 - every 15 minutes,
-- when you press the **Sync with Bambu** button (the integration has one), or the sync icon next to **Scan barcode** in the [card](card.md).
+- when you press the **Reload profiles** button (the integration has one), or the reload icon next to **Scan barcode** in the [card](card.md).
+
+ha-bambulab fetches your profiles from Bambu Cloud only when it connects. To see a new profile right away, reload the Bambu Lab integration (**Settings → Devices & services → Bambu Lab → ⋮ → Reload**) and then press **Reload profiles**.
 
 New profiles become items, changed names are updated. A name from Bambu always wins over a name you typed.
 

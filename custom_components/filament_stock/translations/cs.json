@@ -63,7 +63,7 @@
         "name": "{item} přidat cívku"
       },
       "sync": {
-        "name": "Synchronizovat s Bambu"
+        "name": "Znovu načíst profily"
       }
     },
     "binary_sensor": {

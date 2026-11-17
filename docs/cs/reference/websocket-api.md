@@ -73,7 +73,7 @@ Neznámý kód vrátí položky, ke kterým ho jde přiřadit, a zda je nastaven
 
 ## filament_stock/sync
 
-Bez parametrů. Hned přečte tvoje vlastní profily z cloudu Bambu, pro každou načtenou tiskárnu. Vrací součty:
+Bez parametrů. Hned přečte seznam profilů z ha-bambulab, pro každou načtenou tiskárnu. Vrací součty:
 
 ```json
 {"profiles": 20, "new": 0, "changed": 0}

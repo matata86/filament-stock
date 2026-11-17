@@ -14,9 +14,9 @@ Jedna na integraci:
 
 | Entita | Popis |
 |--------|-------|
-| `button.<zařízení>_synchronizovat_s_bambu` | Hned přečte tvoje vlastní profily z cloudu Bambu (kategorie entity Konfigurace) |
+| `button.<zařízení>_znovu_nacist_profily` | Hned přečte seznam profilů z ha-bambulab (kategorie entity Konfigurace; při instalaci před 0.7.2 `synchronizovat_s_bambu`) |
 
-Přesná ID závisejí na názvu zařízení a filamentu a na jazyku Home Assistantu (v angličtině končí `_add_spool`, `_low` a `sync_with_bambu`); vznikají při založení položky a pak se nemění.
+Přesná ID závisejí na názvu zařízení a filamentu a na jazyku Home Assistantu (v angličtině končí `_add_spool`, `_low` a `reload_profiles`); vznikají při založení položky a pak se nemění.
 
 ## Volby
 

@@ -30,7 +30,7 @@ Karta ukazuje gramy, ne počet cívek: integrace eviduje jen gramy na filament a
 ## Tlačítka
 
 - **Skenovat kód** otevře skener v dialogu, viz [Čárové kódy a štítky](barcodes.md).
-- Ikona synchronizace (popisek „Načíst profily z Bambu Cloudu“) přečte tvoje profily z cloudu Bambu hned. Za běhu se ikona točí, výsledek přijde jako toast, například „Profily načtené: 20 vlastních, 0 nových, 0 změněných.“
+- Ikona vedle (popisek „Znovu načíst profily z ha-bambulab“) hned přečte seznam profilů z ha-bambulab; nový profil z cloudu Bambu potřebuje nejdřív znovu načíst ha-bambulab, viz [Profily Bambu](profiles.md#nacteni-profilu). Za běhu se ikona točí, výsledek přijde jako toast, například „Profily načtené: 20 vlastních, 0 nových, 0 změněných.“
 
 ## Dialog filamentu
 

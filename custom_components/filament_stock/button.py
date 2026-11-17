@@ -16,12 +16,12 @@ async def async_setup_entry(hass, entry, async_add_entities) -> None:
 
 
 class SyncButton(ButtonEntity):
-    """Read the user's profiles from Bambu Cloud now instead of waiting for the next interval."""
+    """Read the profile list from ha-bambulab now instead of waiting for the next interval."""
 
     _attr_has_entity_name = True
     _attr_translation_key = "sync"
     _attr_entity_category = EntityCategory.CONFIG
-    _attr_icon = "mdi:cloud-sync"
+    _attr_icon = "mdi:refresh"
 
     def __init__(self, entry) -> None:
         self.stock = entry.runtime_data

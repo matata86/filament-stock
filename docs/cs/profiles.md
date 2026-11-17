@@ -18,13 +18,15 @@ Vlastní profil potřebuje vlastní `filament_id`. V Bambu Studiu ho založ pře
 
 Profil uložený přes **Save as** z Generic dědí id svého základu (například `GFG99` nebo `GFU99`). ha-bambulab ho v seznamu neuvede a slot ho od Generic nerozezná, takže se z něj nikdy nestane samostatná položka.
 
-## Synchronizace
+## Načtení profilů
 
-Vlastní profily se čtou znovu:
+Filament Stock čte seznam profilů přes veřejnou službu `bambu_lab.get_filament_data` integrace ha-bambulab:
 
 - při startu Home Assistantu,
 - každých 15 minut,
-- po stisku tlačítka **Synchronizovat s Bambu** (integrace ho má), nebo ikony synchronizace vedle **Skenovat kód** v [kartě](card.md).
+- po stisku tlačítka **Znovu načíst profily** (integrace ho má), nebo ikony vedle **Skenovat kód** v [kartě](card.md).
+
+ha-bambulab stahuje tvoje profily z cloudu Bambu jen při připojení. Nový profil uvidíš hned, když znovu načteš integraci Bambu Lab (**Nastavení → Zařízení a služby → Bambu Lab → ⋮ → Znovu načíst**) a pak stiskneš **Znovu načíst profily**.
 
 Nové profily se stanou položkami, změněné názvy se přepíšou. Název z Bambu má vždy přednost před názvem, který jsi zadal ručně.
 

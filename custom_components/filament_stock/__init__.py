@@ -25,7 +25,8 @@ _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.BINARY_SENSOR, Platform.BUTTON, Platform.NUMBER]
 
 SCHEMA = 2  # layout of the stored data: items keyed by profile
-SYNC_INTERVAL = timedelta(minutes=15)  # how often the user's profiles are read from Bambu Cloud
+# How often the profile list is read from ha-bambulab; it fetches the list from Bambu Cloud when it connects.
+SYNC_INTERVAL = timedelta(minutes=15)
 
 LOW_MESSAGE = {
     "cs": ("Dochází filament", "{item}: zbývá {grams:.0f} g (práh {low:.0f} g)."),
@@ -76,24 +77,17 @@ class Stock:
         self.aliases = data.get("aliases", {})
 
     async def async_sync_profiles(self, _now=None) -> dict | None:
-        """Read the user's profiles from Bambu Cloud again and apply new names and items."""
-        result = await self.async_load_profiles(cloud=True)
+        """Read the profile list from ha-bambulab again and apply new names and items."""
+        result = await self.async_load_profiles()
         self.refresh()
         return result
 
-    async def async_load_profiles(self, cloud: bool = False) -> dict | None:
+    async def async_load_profiles(self) -> dict | None:
         """Ask ha-bambulab for the profile list; the user's own profiles become items.
 
         Returns how many own profiles there are, how many are new and how many changed; None on error.
         """
         try:
-            if cloud:
-                # ha-bambulab reads the cloud profiles only when it connects. Its internals, so guarded.
-                device = dr.async_get(self.hass).async_get(self.entry.data[CONF_PRINTER])
-                coordinators = self.hass.data.get(SOURCE_PLATFORM, {})
-                coordinator = coordinators.get(device.config_entry_id) if device else None
-                if settings := getattr(getattr(coordinator, "client", None), "slicer_settings", None):
-                    await self.hass.async_add_executor_job(settings.update)
             response = await self.hass.services.async_call(
                 SOURCE_PLATFORM,
                 "get_filament_data",
@@ -320,7 +314,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     stock = Stock(hass, entry)
     stock.discover()
     await stock.async_load()
-    await stock.async_load_profiles(cloud=True)
+    await stock.async_load_profiles()
     entry.runtime_data = stock
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     stock.start()

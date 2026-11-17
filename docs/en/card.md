@@ -30,7 +30,7 @@ The card shows grams, not a spool count: the integration keeps only grams per fi
 ## Buttons
 
 - **Scan barcode** opens the scanner in a dialog, see [Barcodes and labels](barcodes.md).
-- The sync icon (tooltip "Load profiles from Bambu Cloud") reads your profiles from Bambu Cloud now. The icon spins while it runs; the result comes as a toast, for example "Profiles loaded: 20 own, 0 new, 0 changed."
+- The reload icon (tooltip "Reload profiles from ha-bambulab") reads the profile list from ha-bambulab now; a profile new in Bambu Cloud needs a reload of ha-bambulab first, see [Bambu profiles](profiles.md#reloading-profiles). The icon spins while it runs; the result comes as a toast, for example "Profiles loaded: 20 own, 0 new, 0 changed."
 
 ## Filament dialog
 

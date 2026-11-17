@@ -73,7 +73,7 @@ An unknown code returns the items it can be assigned to and whether an AI Task e
 
 ## filament_stock/sync
 
-No parameters. Reads your own profiles from Bambu Cloud now, for every loaded printer. Returns the sums:
+No parameters. Reads the profile list from ha-bambulab now, for every loaded printer. Returns the sums:
 
 ```json
 {"profiles": 20, "new": 0, "changed": 0}

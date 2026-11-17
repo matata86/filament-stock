@@ -4,7 +4,7 @@
 
 - V Bambu Studiu je uložený přes **Save as**. Takový profil má id svého základu Generic a nepozná se. Založ ho znovu přes **Create Filament**, viz [Profily Bambu](profiles.md#create-filament-ne-save-as).
 - Je jen v prázdném nebo neznámém slotu: slot bez profilu se přeskakuje.
-- Je to nový profil: stiskni ikonu synchronizace v kartě nebo tlačítko **Synchronizovat s Bambu**, nebo počkej až 15 minut.
+- Je to nový profil, který ha-bambulab ještě nenačetla. Nový profil uvidíš hned, když znovu načteš integraci Bambu Lab (**Nastavení → Zařízení a služby → Bambu Lab → ⋮ → Znovu načíst**) a pak stiskneš **Znovu načíst profily**.
 - Má 0 g: karta prázdné filamenty skrývá, použij **Zobrazit prázdné**.
 
 ## Karta je po aktualizaci stará

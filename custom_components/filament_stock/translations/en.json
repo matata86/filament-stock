@@ -63,7 +63,7 @@
         "name": "{item} add spool"
       },
       "sync": {
-        "name": "Sync with Bambu"
+        "name": "Reload profiles"
       }
     },
     "binary_sensor": {

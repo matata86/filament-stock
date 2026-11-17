@@ -4,7 +4,7 @@
 
 - It was saved in Bambu Studio with **Save as**. Such a profile has the id of its Generic base and cannot be recognised. Create it again with **Create Filament**, see [Bambu profiles](profiles.md#create-filament-not-save-as).
 - It is only in an empty or unknown slot: a slot without a profile is skipped.
-- It is a new profile: press the sync icon in the card or the **Sync with Bambu** button, or wait up to 15 minutes.
+- It is a new profile: ha-bambulab has not loaded it yet. To see a new profile right away, reload the Bambu Lab integration (**Settings → Devices & services → Bambu Lab → ⋮ → Reload**) and then press **Reload profiles**.
 - It has 0 g: the card hides empty filaments, use **Show empty**.
 
 ## The card is the old version after an update

@@ -14,7 +14,7 @@ One per integration:
 
 | Entity | Description |
 |--------|-------------|
-| `button.<device>_sync_with_bambu` | Reads your own profiles from Bambu Cloud now (entity category Configuration) |
+| `button.<device>_reload_profiles` | Reads the profile list from ha-bambulab now (entity category Configuration; `sync_with_bambu` when installed before 0.7.2) |
 
 The exact ids depend on the name of the device and of the filament; they are made when the item is created and then stay.
 

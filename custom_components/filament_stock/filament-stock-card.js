@@ -36,7 +36,7 @@ const CARD = {
     saved: "Saved: {grams} g",
     spool_added: "+{g} g, now {grams} g",
     close: "Close",
-    sync: "Load profiles from Bambu Cloud",
+    sync: "Reload profiles from ha-bambulab",
     synced: "Profiles loaded: {profiles} own, {new} new, {changed} changed.",
     low: "Running low",
   },
@@ -62,7 +62,7 @@ const CARD = {
     saved: "Uloženo: {grams} g",
     spool_added: "+{g} g, nyní {grams} g",
     close: "Zavřít",
-    sync: "Načíst profily z Bambu Cloudu",
+    sync: "Znovu načíst profily z ha-bambulab",
     synced: "Profily načtené: {profiles} vlastních, {new} nových, {changed} změněných.",
     low: "Dochází",
   },
@@ -286,7 +286,7 @@ class FilamentStockCard extends HTMLElement {
     });
   }
 
-  // Profiles from Bambu Cloud again (new names and filaments), then the list.
+  // Profile list from ha-bambulab again (new names and filaments), then the list.
   async _sync() {
     const button = this._root.querySelector("#sync");
     if (button.classList.contains("busy")) return;

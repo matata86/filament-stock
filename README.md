@@ -26,7 +26,7 @@ A filament stock in grams for Bambu Lab printers in Home Assistant. After every 
 - Dashboard card with search, Brand / Material / Colour filters, a total, and a dialog per filament (set the grams, add a full spool, manage barcodes).
 - Barcode scanning to add a spool: the Home Assistant app scanner, the browser camera, or typing the code (works with a USB reader too). Numeric EAN / GTIN codes are checked, so a misread is rejected.
 - An unknown code is assigned once with three picks (Brand, Material, Colour); next time it is recognised. Optionally photograph the label and let an AI Task entity suggest the filament.
-- Your profiles are synced from Bambu Cloud every 15 minutes, at start and with a button.
+- Your profiles come from the public `bambu_lab.get_filament_data` service of ha-bambulab: read at start, every 15 minutes and with a button.
 - English and Czech.
 
 ## Requirements
@@ -81,7 +81,7 @@ One per integration:
 
 | Entity | Description |
 |--------|-------------|
-| `button.<device>_sync_with_bambu` | Reads your profiles from Bambu Cloud now |
+| `button.<device>_reload_profiles` | Reads the profile list from ha-bambulab now |
 
 ## Options
 
@@ -114,7 +114,8 @@ Details: [How deduction works](https://matata86.github.io/filament-stock/deducti
 - Two shades with the same nearest basic colour get the same name and differ only by the colour dot.
 - Whether the weight from the cloud includes purge and the prime tower is not verified, hence the extra for waste.
 - The AMS HT slot name (`AMS HT n`) comes from the ha-bambulab source and is not verified on a device.
-- Refreshing the profiles from Bambu Cloud and the app scanner use internal APIs of ha-bambulab and of the Home Assistant frontend; a Home Assistant update may break them (the browser camera and typing the code keep working).
+- ha-bambulab fetches your profiles from Bambu Cloud only when it connects. A profile created later shows up after ha-bambulab reconnects or is reloaded.
+- The app scanner uses an internal API of the Home Assistant frontend; a Home Assistant update may break it (the browser camera and typing the code keep working).
 
 ## Support
 
