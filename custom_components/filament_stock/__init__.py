@@ -77,6 +77,7 @@ class Stock:
         self.slot_items: dict[str, str | None] = {}  # slot name -> item key loaded in it
         self.signal_slots = f"{DOMAIN}_slots_{entry.entry_id}"
         self._checked = False  # the running job was compared with the loaded spools
+        self._stale = None  # when the per-slot grams seen at job start were written (the previous job's)
 
     def option(self, key: str) -> float:
         return self.entry.options.get(key, DEFAULTS[key])
@@ -255,10 +256,16 @@ class Stock:
         )
         if not self.tracker.active:
             self._checked = False
-        elif weights and not self._checked:
-            # Per-slot grams arrive a few seconds after the job starts; compare them once.
-            self._checked = True
-            self.check_job(weights, factor)
+            self._stale = None
+        elif not self._checked:
+            # The new job's per-slot grams arrive a few seconds after it starts; until then the
+            # sensor still holds the previous job's. Compare once, with grams written after the start.
+            updated = weight.last_updated if weight is not None else None
+            if self._stale is None:
+                self._stale = updated
+            elif weights and updated != self._stale:
+                self._checked = True
+                self.check_job(weights, factor)
         if usage:
             _LOGGER.info("Print ended, deducting %s (x%.2f waste)", usage, factor)
             for key, grams in usage.items():

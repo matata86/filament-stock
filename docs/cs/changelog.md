@@ -2,8 +2,9 @@
 
 Každé vydání je s poznámkami v [GitHub releases](https://github.com/matata86/filament-stock/releases). Tato stránka uvádí, co se změnilo pro uživatele, jedním řádkem na verzi.
 
-## 0.1.0 – 0.7.3
+## 0.1.0 – 0.7.4
 
+- **0.7.4:** oprava: kontrola při startu tisku porovnávala gramy předchozí úlohy, které na senzoru zůstávají ještě pár sekund po startu nové.
 - **0.7.3:** senzor u každého slotu AMS ukazuje gramy na vložené cívce (sklad po odečtení celých cívek). Při startu tisku se úloha porovná s cívkami v AMS, i u vícebarevného tisku; když filament nestačí, přijde oznámení a událost `filament_stock_shortage`. Automatické doplnění AMS: slotu, kterému došel filament, se odečte, co mu zbývalo, záložnímu slotu zbytek.
 - **0.7.2:** Filament Stock už sám neobnovuje cloudovou relaci ha-bambulab; profily čte jen přes veřejnou službu `bambu_lab.get_filament_data`. Tlačítko **Synchronizovat s Bambu** se jmenuje **Znovu načíst profily**. Nový profil z cloudu Bambu se objeví po znovunačtení ha-bambulab.
 - **0.7.1:** ikona synchronizace vedle **Skenovat kód** v kartě hned přečte tvoje profily z cloudu Bambu a výsledek ukáže jako toast. Aliasy značek (víc výrobců jako jedna značka) a sloučení položky do jiné jsou dostupné přes websocket API (`filament_stock/brands`, `filament_stock/merge`).
