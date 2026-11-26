@@ -181,6 +181,8 @@ class JobTracker:
         self.shares: dict[str, float] = {}  # item key -> progress points printed from it
         self.progress = 0.0
         self.last_item: str | None = None
+        self.slot: str | None = None  # slot active right now
+        self.backups: dict[str, list[str]] = {}  # planned slot -> slots that took over when it ran out
 
     def update(
         self,
@@ -189,10 +191,12 @@ class JobTracker:
         total: float | None,
         weights: dict[str, float],
         slots: dict[str, tuple[str | None, bool]],
+        stock: dict[str, float] | None = None,
     ) -> dict[str, float] | None:
         """Feed the current printer state.
 
         slots maps slot name ('AMS 1 Tray 2', 'External Spool') to (item key, is active).
+        stock is the grams on stock per item; it tells how much a slot that ran out had left.
         Returns {item key: grams} once, when a job ends; otherwise None.
         """
         if status in PRINTING:
@@ -209,17 +213,17 @@ class JobTracker:
         if total:
             self.total = total
         factor = 1.0 if status == "finish" else self.progress / 100
-        usage = self._usage(factor)
+        usage = self._usage(factor, stock or {})
         self.reset()
         return usage
 
     def _observe(self, progress, total, weights, slots) -> None:
-        current = None
+        current = slot = None
         for name, (item, is_active) in slots.items():
             if item:
                 self.slot_items[name] = item
                 if is_active:
-                    current = item
+                    current, slot = item, name
         if progress is not None:
             if progress < self.progress:
                 # Progress left over from the previous job; start counting again.
@@ -233,22 +237,39 @@ class JobTracker:
             self.weights = dict(weights)
         if total:
             self.total = total
+        if slot and slot != self.slot:
+            # The job moved to a slot the slicer planned nothing for: AMS auto refill took over
+            # from a slot that ran out. Chained refills are kept in order under the planned slot.
+            origin = self.slot if self.slot in self.weights else next(
+                (planned for planned, chain in self.backups.items() if self.slot in chain), None
+            )
+            if origin and slot not in self.weights and slot not in self.backups.get(origin, ()):
+                self.backups.setdefault(origin, []).append(slot)
+            self.slot = slot
 
-    def _usage(self, factor: float) -> dict[str, float]:
+    def _usage(self, factor: float, stock: dict[str, float]) -> dict[str, float]:
         out: dict[str, float] = {}
         for slot, grams in self.weights.items():
             item = self.slot_items.get(slot)
-            if item:
-                out[item] = out.get(item, 0.0) + grams
+            if not item:
+                continue
+            chain = [item, *(self.slot_items[b] for b in self.backups.get(slot, ()) if b in self.slot_items)]
+            left = grams * factor
+            for spent in chain[:-1]:
+                # A slot that ran out used up what the stock said it held; the next one printed the rest.
+                used = min(left, max(stock.get(spent, 0.0), 0.0))
+                out[spent] = out.get(spent, 0.0) + used
+                left -= used
+            out[chain[-1]] = out.get(chain[-1], 0.0) + left
         if not out and self.total > 0:
             # No per-slot data (e.g. print started from the touchscreen):
             # split the total by how much progress each spool was active for.
             share_sum = sum(self.shares.values())
             if share_sum > 0:
-                out = {i: self.total * s / share_sum for i, s in self.shares.items()}
+                out = {i: self.total * factor * s / share_sum for i, s in self.shares.items()}
             elif self.last_item:
-                out = {self.last_item: self.total}
-        return {i: round(g * factor, 1) for i, g in out.items() if g * factor > 0}
+                out = {self.last_item: self.total * factor}
+        return {i: round(g, 1) for i, g in out.items() if g > 0}
 
 
 def merge_plan(items: dict, meta: dict, source: str, target: str) -> tuple[float, list]:

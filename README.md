@@ -100,6 +100,7 @@ The menu also has **Rename filament** (only the name shown in Home Assistant, em
 
 - A print is followed from `prepare` / `running` / `pause` until it ends.
 - Main path: the grams per slot from the attributes of the printer's `print_weight` sensor, assigned to the filament that was in each slot during the print.
+- AMS auto refill: when the job switches to a slot the slicer planned nothing for, the slot that ran out is deducted what the stock had left for it, the backup slot the rest.
 - Fallback (a print without a cloud job, for example from the display): the total weight is split by how much of the progress each slot was active.
 - `finish` deducts 100 %; any other end (`failed`, `idle`) deducts the share reached by the progress.
 - The extra for waste is added to the deduction.

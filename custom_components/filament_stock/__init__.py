@@ -213,15 +213,17 @@ class Stock:
                 for k, v in weight.attributes.items()
                 if k.startswith(("AMS", "External")) and isinstance(v, (int, float))
             }
+        factor = 1 + self.option(CONF_WASTE) / 100
         usage = self.tracker.update(
             status.state if status else None,
             _number(progress.state) if progress else None,
             _number(weight.state) if weight else None,
             weights,
             slots,
+            # Grams a spool that runs out can still give to the model; the waste comes from it too.
+            {key: grams / factor for key, grams in self.items.items()},
         )
         if usage:
-            factor = 1 + self.option(CONF_WASTE) / 100
             _LOGGER.info("Print ended, deducting %s (x%.2f waste)", usage, factor)
             for key, grams in usage.items():
                 self.set(key, self.items.get(key, 0.0) - grams * factor)

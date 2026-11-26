@@ -8,6 +8,8 @@ A print is followed from the printer states `prepare` / `running` / `pause` unti
 
 The main source is the `print_weight` sensor of the printer. Its attributes hold the grams per slot, for example `AMS 1 Tray 2: 12.5` or `External Spool: 4.8`. Each slot is turned into a stock item by what was in it during the print, so a multi-colour print deducts from every spool used.
 
+With AMS auto refill (filament backup) the slicer plans the grams on one slot, and the printer moves on to another slot when the first one runs out. The integration sees the switch to a slot the slicer planned nothing for. The slot that ran out is deducted what the stock still had for it (so it ends at 0 g), and the backup slot gets the rest. Keep the stock of a nearly empty spool right before such a print.
+
 ## Fallback by progress
 
 A print without a cloud job (for example started from the printer display) has no per-slot weights. Then the total weight is split by how many percent of the progress each slot was active.

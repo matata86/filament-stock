@@ -8,6 +8,8 @@ Tisk se sleduje od stavů tiskárny `prepare` / `running` / `pause` do konce. In
 
 Hlavním zdrojem je senzor `print_weight` tiskárny. Jeho atributy drží gramy po slotech, například `AMS 1 Tray 2: 12.5` nebo `External Spool: 4.8`. Každý slot se převede na položku skladu podle toho, co v něm během tisku bylo, takže vícebarevný tisk odečítá z každé použité cívky.
 
+Při AMS auto refill (záloha filamentu) slicer naplánuje gramy na jeden slot a tiskárna po jeho doběhnutí pokračuje z jiného slotu. Integrace pozná přepnutí na slot, pro který slicer nic nenaplánoval. Slotu, který došel, se odečte to, co měl ještě na skladě (skončí na 0 g), a záložní slot dostane zbytek. U skoro prázdné cívky měj stav skladu před takovým tiskem aktuální.
+
 ## Záloha podle průběhu
 
 Tisk bez cloudové úlohy (například spuštěný z displeje tiskárny) nemá hmotnosti po slotech. Pak se celková hmotnost rozdělí podle toho, kolik procent průběhu byl který slot aktivní.

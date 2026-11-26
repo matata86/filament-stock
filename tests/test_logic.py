@@ -162,6 +162,23 @@ def test_fallback_split_by_progress():
     assert t.update("finish", 100, 80.0, {}, slots()) == {GREY: 60.0, BLACK: 20.0}
 
 
+def test_auto_refill_uses_up_the_empty_spool():
+    t = JobTracker()
+    w = {"AMS 1 Tray 1": 300.0}  # the slicer planned the whole job on tray 1
+    stock = {GREY: 120.0, BLACK: 1000.0}
+    t.update("running", 10, 300.0, w, slots(1), stock)
+    t.update("running", 40, 300.0, w, slots(2), stock)  # tray 1 ran out, tray 2 took over
+    assert t.update("finish", 100, 300.0, w, slots(), stock) == {GREY: 120.0, BLACK: 180.0}
+    # Failed job: only the printed part is split, the empty spool first.
+    t.update("running", 10, 300.0, w, slots(1), stock)
+    t.update("running", 50, 300.0, w, slots(2), stock)
+    assert t.update("failed", 0, 300.0, {}, slots(), stock) == {GREY: 120.0, BLACK: 30.0}
+    # No refill: a planned slot becoming active is not a backup.
+    t.update("running", 10, 300.0, {"AMS 1 Tray 1": 200.0, "AMS 1 Tray 2": 100.0}, slots(1), stock)
+    t.update("running", 50, 300.0, {"AMS 1 Tray 1": 200.0, "AMS 1 Tray 2": 100.0}, slots(2), stock)
+    assert t.update("finish", 100, 300.0, {}, slots(), stock) == {GREY: 200.0, BLACK: 100.0}
+
+
 def test_dropout_keeps_job_open():
     t = JobTracker()
     t.update("running", 50, 10.0, {"AMS 1 Tray 1": 10.0}, slots(1))
