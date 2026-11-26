@@ -10,6 +10,12 @@ Per stock item, on the device `Filament <printer name>`:
 | `button.<device>_<filament>_add_spool` | Adds the weight of a new spool |
 | `binary_sensor.<device>_<filament>_low` | On when the stock is below the low stock threshold (device class problem) |
 
+One per spool slot (each AMS slot and the external spool):
+
+| Entity | Description |
+|--------|-------------|
+| `sensor.<device>_<slot>` | Grams on the spool in the slot, see [Spool in each slot](deduction.md#spool-in-each-slot-and-the-check-at-print-start). Attributes: `item`, `label`, `stock` |
+
 One per integration:
 
 | Entity | Description |

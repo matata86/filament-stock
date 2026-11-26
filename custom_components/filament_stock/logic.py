@@ -272,6 +272,56 @@ class JobTracker:
         return {i: round(g, 1) for i, g in out.items() if g > 0}
 
 
+def loaded_grams(slot_items: dict[str, str | None], stock: dict[str, float], spool: float) -> dict[str, float]:
+    """Grams on the spool in each slot, when the stock of an item is whole spools plus one opened spool.
+
+    The opened spool is the remainder of the stock ('3092 g' with 1000 g spools -> 92 g).
+    When one item is in several slots, the first slot (by name) holds the opened spool
+    and the others a full one each, as long as the stock lasts.
+    """
+    out: dict[str, float] = {}
+    left: dict[str, float] = {}
+    for slot in sorted(slot_items):
+        item = slot_items[slot]
+        if not item:
+            continue
+        if item in left:
+            grams = min(spool, left[item])
+        else:
+            total = max(stock.get(item, 0.0), 0.0)
+            grams = total % spool if spool > 0 else total
+            if total > 0 and grams < 1:
+                # Whole spools only: the one in the slot is full.
+                grams = min(total, spool) if spool > 0 else total
+            left[item] = total
+        left[item] -= grams
+        out[slot] = round(grams, 1)
+    return out
+
+
+def shortages(
+    weights: dict[str, float],
+    slot_items: dict[str, str | None],
+    loaded: dict[str, float],
+    factor: float = 1.0,
+) -> dict[str, tuple[float, float]]:
+    """Items the job needs more of than the slots hold: {item key: (grams needed, grams loaded)}.
+
+    weights are the slicer grams of the whole job per slot, factor adds the waste. The stock is
+    deducted only when the job ends, so the whole job is compared at any progress. A slot the
+    job does not use but that holds the same item counts too: AMS auto refill continues from it.
+    """
+    need: dict[str, float] = {}
+    for slot, grams in weights.items():
+        if item := slot_items.get(slot):
+            need[item] = need.get(item, 0.0) + grams * factor
+    have: dict[str, float] = {}
+    for slot, item in slot_items.items():
+        if item in need:
+            have[item] = have.get(item, 0.0) + loaded.get(slot, 0.0)
+    return {i: (round(n, 1), round(have.get(i, 0.0), 1)) for i, n in need.items() if n > have.get(i, 0.0)}
+
+
 def merge_plan(items: dict, meta: dict, source: str, target: str) -> tuple[float, list]:
     """Grams and barcodes the target item holds after absorbing the source item."""
     codes = [*meta.get(target, {}).get("barcodes", [])]

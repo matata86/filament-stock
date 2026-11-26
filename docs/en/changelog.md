@@ -2,8 +2,9 @@
 
 Every release is listed with notes in the [GitHub releases](https://github.com/matata86/filament-stock/releases). This page lists what changed for users, one line per version.
 
-## 0.1.0 – 0.7.2
+## 0.1.0 – 0.7.3
 
+- **0.7.3:** a sensor per AMS slot shows the grams on the loaded spool (the stock left after whole spools). When a print starts, the job is checked against the spools in the AMS, also for multicolour prints; a filament that falls short raises a notification and the event `filament_stock_shortage`. AMS auto refill: the slot that ran out is deducted what it had left, the backup slot the rest.
 - **0.7.2:** Filament Stock no longer refreshes ha-bambulab's cloud session itself; it reads profiles only through the public `bambu_lab.get_filament_data` service. The **Sync with Bambu** button is now **Reload profiles**. A profile new in Bambu Cloud appears after ha-bambulab is reloaded.
 - **0.7.1:** a sync icon next to **Scan barcode** in the card reads your profiles from Bambu Cloud at once and shows the result as a toast. Brand aliases (show several vendors as one brand) and merging one item into another are available through the websocket API (`filament_stock/brands`, `filament_stock/merge`).
 - **0.7.0:** the dashboard card `custom:filament-stock-card` with search, Brand / Material / Colour filters, a total, empty filaments hidden and a dialog per filament. Scanning moved into the card and the sidebar panel is gone. **Undo** after a scan no longer unlinks the code; codes are edited and removed in the filament dialog. The integration registers the card itself.

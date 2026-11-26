@@ -10,6 +10,12 @@ Na každou položku skladu, na zařízení `Filament <název tiskárny>`:
 | `button.<zařízení>_<filament>_pridat_civku` | Přičte hmotnost nové cívky |
 | `binary_sensor.<zařízení>_<filament>_dochazi` | Zapnuto, když je sklad pod prahem nízkého stavu (třída zařízení problém) |
 
+Jedna na slot (každý slot AMS a externí cívka):
+
+| Entita | Popis |
+|--------|-------|
+| `sensor.<zařízení>_<slot>` | Gramy na cívce ve slotu, viz [Cívka ve slotu](deduction.md#civka-ve-slotu-a-kontrola-pri-startu-tisku). Atributy: `item`, `label`, `stock` |
+
 Jedna na integraci:
 
 | Entita | Popis |

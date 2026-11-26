@@ -22,6 +22,7 @@ A filament stock in grams for Bambu Lab printers in Home Assistant. After every 
 - One stock item per Bambu filament profile: your own profile is one item, a built-in profile is split by colour. Nothing to set up by hand.
 - Deduction per slot after every print, with a fallback by print progress when the per-slot weights are missing (for example a print started from the printer display).
 - Extra for waste, added to every deduction (default 5 %).
+- Grams on the spool in each AMS slot, and a check when a print starts: a notification and an event when the filament in the AMS will not last, also for multicolour prints.
 - Low stock: a notification and a `binary_sensor` per filament when it drops below a threshold.
 - Dashboard card with search, Brand / Material / Colour filters, a total, and a dialog per filament (set the grams, add a full spool, manage barcodes).
 - Barcode scanning to add a spool: the Home Assistant app scanner, the browser camera, or typing the code (works with a USB reader too). Numeric EAN / GTIN codes are checked, so a misread is rejected.
@@ -77,6 +78,12 @@ Per stock item, on the device `Filament <printer name>`:
 | `button.<device>_<filament>_add_spool` | Adds the weight of a new spool |
 | `binary_sensor.<device>_<filament>_low` | On when the stock is below the low stock threshold |
 
+One per spool slot (each AMS slot and the external spool):
+
+| Entity | Description |
+|--------|-------------|
+| `sensor.<device>_<slot>` | Grams on the spool in the slot: the stock left after whole spools. Attributes: `item`, `label`, `stock` |
+
 One per integration:
 
 | Entity | Description |
@@ -104,11 +111,13 @@ The menu also has **Rename filament** (only the name shown in Home Assistant, em
 - Fallback (a print without a cloud job, for example from the display): the total weight is split by how much of the progress each slot was active.
 - `finish` deducts 100 %; any other end (`failed`, `idle`) deducts the share reached by the progress.
 - The extra for waste is added to the deduction.
+- At print start the job is compared with the spools in the AMS (the opened spool is assumed to be the loaded one); when a filament falls short, a notification and the event `filament_stock_shortage` (for a phone push via an automation).
 
 Details: [How deduction works](https://matata86.github.io/filament-stock/deduction/).
 
 ## Known limitations
 
+- The grams in a slot are a guess: the stock does not know which spool is loaded. It assumes the opened spool (stock modulo the spool weight) is in the AMS.
 - An unfinished print is not stored: restarting Home Assistant during a print loses the progress fallback (the per-slot weights still work).
 - A built-in profile is split by the exact hex colour: a different shade in a slot is a new item.
 - Own profiles saved with **Save as** share the id of the built-in profile, are not listed by ha-bambulab and are not recognised in a slot.

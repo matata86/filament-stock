@@ -13,6 +13,8 @@ from logic import (  # noqa: E402
     item_facets,
     label_match,
     label_prompt,
+    loaded_grams,
+    shortages,
     name_color,
     item_key,
     merge_plan,
@@ -216,6 +218,26 @@ def test_brand_map_and_merge():
     meta = {"Pa": {"barcodes": ["1", "2"]}, "Pb": {"barcodes": ["2", "3"]}}
     assert merge_plan(items, meta, "Pb", "Pa") == (1250.5, ["1", "2", "3"])
     assert merge_plan(items, {}, "Pb", "Pc") == (250.5, [])
+
+
+def test_loaded_and_shortage():
+    stock = {"A": 3092.0, "B": 2000.0, "C": 0.0, "D": 1500.0}
+    slots = {"AMS 1 Tray 1": "A", "AMS 1 Tray 2": "B", "AMS 1 Tray 3": "C", "AMS 1 Tray 4": None,
+             "External Spool": "D", "AMS 2 Tray 1": "D"}
+    loaded = loaded_grams(slots, stock, 1000.0)
+    # opened spool = remainder; whole spools -> a full one; second slot of D gets what is left
+    assert loaded == {"AMS 1 Tray 1": 92.0, "AMS 1 Tray 2": 1000.0, "AMS 1 Tray 3": 0.0,
+                      "AMS 2 Tray 1": 500.0, "External Spool": 1000.0}
+    assert loaded_grams({"AMS 1 Tray 1": "A", "AMS 1 Tray 2": "A"}, {"A": 1050.0}, 1000.0) == {
+        "AMS 1 Tray 1": 50.0, "AMS 1 Tray 2": 1000.0}
+    assert loaded_grams({"x": "A", "y": "A"}, {"A": 300.0}, 1000.0) == {"x": 300.0, "y": 0.0}
+    weights = {"AMS 1 Tray 1": 71.3, "AMS 1 Tray 2": 18.7}
+    assert shortages(weights, slots, loaded) == {}
+    # 5 % waste pushes A over the 92 g on the spool
+    assert shortages({"AMS 1 Tray 1": 90.0}, slots, loaded, 1.05) == {"A": (94.5, 92.0)}
+    # auto refill: a second slot with the same item adds to what is loaded
+    assert shortages({"AMS 2 Tray 1": 1200.0}, slots, loaded) == {}
+    assert shortages({"AMS 1 Tray 3": 5.0, "AMS 1 Tray 4": 5.0}, slots, loaded) == {"C": (5.0, 0.0)}
 
 
 if __name__ == "__main__":

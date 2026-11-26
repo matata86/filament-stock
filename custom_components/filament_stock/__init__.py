@@ -18,11 +18,21 @@ from homeassistant.helpers.event import async_track_state_change_event, async_tr
 from homeassistant.helpers.storage import Store
 
 from .const import CONF_LOW, CONF_PRINTER, CONF_SPOOL, CONF_WASTE, DEFAULTS, DOMAIN, SOURCE_PLATFORM
-from .logic import FACTS, JobTracker, is_custom, item_label, merge_plan, profile_facts, slot_item
+from .logic import (
+    FACTS,
+    JobTracker,
+    is_custom,
+    item_label,
+    loaded_grams,
+    merge_plan,
+    profile_facts,
+    shortages,
+    slot_item,
+)
 from .panel import async_setup_panel
 
 _LOGGER = logging.getLogger(__name__)
-PLATFORMS = [Platform.BINARY_SENSOR, Platform.BUTTON, Platform.NUMBER]
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.BUTTON, Platform.NUMBER, Platform.SENSOR]
 
 SCHEMA = 2  # layout of the stored data: items keyed by profile
 # How often the profile list is read from ha-bambulab; it fetches the list from Bambu Cloud when it connects.
@@ -32,6 +42,11 @@ LOW_MESSAGE = {
     "cs": ("Dochází filament", "{item}: zbývá {grams:.0f} g (práh {low:.0f} g)."),
     "en": ("Filament running low", "{item}: {grams:.0f} g left (threshold {low:.0f} g)."),
 }
+SHORTAGE_MESSAGE = {
+    "cs": ("Filament v AMS nemusí stačit", "{item}: tisk potřebuje {need:.0f} g, na cívce zbývá {loaded:.0f} g."),
+    "en": ("Filament in the AMS may run out", "{item}: the print needs {need:.0f} g, the spool holds {loaded:.0f} g."),
+}
+SHORTAGE_EVENT = f"{DOMAIN}_shortage"
 
 
 def _number(value) -> float | None:
@@ -59,9 +74,20 @@ class Stock:
         self._store: Store = Store(hass, 1, f"{DOMAIN}.{entry.entry_id}")
         self._printer: dict[str, str] = {}  # translation_key -> entity_id
         self._slots: dict[str, str] = {}  # entity_id -> slot name
+        self.slot_items: dict[str, str | None] = {}  # slot name -> item key loaded in it
+        self.signal_slots = f"{DOMAIN}_slots_{entry.entry_id}"
+        self._checked = False  # the running job was compared with the loaded spools
 
     def option(self, key: str) -> float:
         return self.entry.options.get(key, DEFAULTS[key])
+
+    @property
+    def slot_names(self) -> list[str]:
+        return sorted(set(self._slots.values()))
+
+    def loaded(self) -> dict[str, float]:
+        """Grams on the spool in each slot."""
+        return loaded_grams(self.slot_items, self.items, self.option(CONF_SPOOL))
 
     async def async_load(self) -> None:
         data = (await self._store.async_load()) or {}
@@ -202,6 +228,10 @@ class Stock:
         if renamed:
             # Name and colour are part of the entities, reload to apply them.
             self.hass.config_entries.async_schedule_reload(self.entry.entry_id)
+        slot_items = {slot: key for slot, (key, _) in slots.items()}
+        if slot_items != self.slot_items:
+            self.slot_items = slot_items
+            async_dispatcher_send(self.hass, self.signal_slots)
 
         status = states.get(self._printer["print_status"])
         progress = states.get(self._printer["print_progress"])
@@ -223,10 +253,47 @@ class Stock:
             # Grams a spool that runs out can still give to the model; the waste comes from it too.
             {key: grams / factor for key, grams in self.items.items()},
         )
+        if not self.tracker.active:
+            self._checked = False
+        elif weights and not self._checked:
+            # Per-slot grams arrive a few seconds after the job starts; compare them once.
+            self._checked = True
+            self.check_job(weights, factor)
         if usage:
             _LOGGER.info("Print ended, deducting %s (x%.2f waste)", usage, factor)
             for key, grams in usage.items():
                 self.set(key, self.items.get(key, 0.0) - grams * factor)
+
+    @callback
+    def check_job(self, weights: dict[str, float], factor: float) -> None:
+        """Warn when the job needs more of an item than its spools in the AMS hold."""
+        short = shortages(weights, self.slot_items, self.loaded(), factor)
+        notification_id = f"{DOMAIN}_shortage_{self.entry.entry_id}"
+        if not short:
+            persistent_notification.async_dismiss(self.hass, notification_id)
+            return
+        title, text = SHORTAGE_MESSAGE.get(self.hass.config.language, SHORTAGE_MESSAGE["en"])
+        lines = [text.format(item=self.label(key), need=need, loaded=have) for key, (need, have) in short.items()]
+        _LOGGER.warning("Not enough filament loaded: %s", short)
+        persistent_notification.async_create(self.hass, "\n".join(lines), title, notification_id)
+        self.hass.bus.async_fire(
+            SHORTAGE_EVENT,
+            {
+                "entry_id": self.entry.entry_id,
+                "title": title,
+                "message": "\n".join(lines),
+                "items": [
+                    {
+                        "item": key,
+                        "label": self.label(key),
+                        "needed": need,
+                        "loaded": have,
+                        "slots": [slot for slot, item in self.slot_items.items() if item == key],
+                    }
+                    for key, (need, have) in short.items()
+                ],
+            },
+        )
 
     @callback
     def set(self, key: str, grams: float) -> None:

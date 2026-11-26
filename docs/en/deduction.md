@@ -27,6 +27,25 @@ The option **Extra for waste (purge, failed starts)** (default 5 %) is added to 
 
 When a filament drops below **Low stock threshold** (default 300 g), a persistent notification "Filament running low" appears and its `binary_sensor` `…_low` turns on. The notification is created once, when the stock crosses the threshold.
 
+## Spool in each slot and the check at print start
+
+The stock does not know which spool is in the AMS. It assumes the stock is whole spools plus one opened spool, and that the opened spool is the one loaded: with 3092 g in stock and **Weight of a new spool** 1000 g, the slot holds 92 g. When the stock is exactly whole spools, the slot holds a full one. When one filament is in two slots, the first slot (by name) holds the opened spool and the next one a full spool, as long as the stock lasts. The sensor `sensor.<device>_<slot>` shows these grams for each AMS slot and the external spool.
+
+When a print starts and the per-slot weights arrive, the job is compared once with these spools, waste included, for every filament of a multicolour print. A slot that holds the same filament but is not used by the job counts too, since AMS auto refill continues from it. When a filament falls short, a persistent notification "Filament in the AMS may run out" appears and the event `filament_stock_shortage` is fired, with `title`, `message` and `items` (`item`, `label`, `needed`, `loaded`, `slots`). A print without per-slot weights (started from the printer display) is not checked.
+
+To get the warning on a phone, add an automation:
+
+```yaml
+triggers:
+  - trigger: event
+    event_type: filament_stock_shortage
+actions:
+  - action: notify.mobile_app_<your_phone>
+    data:
+      title: "{{ trigger.event.data.title }}"
+      message: "{{ trigger.event.data.message }}"
+```
+
 ## Corrections
 
 The stock is a number you can overwrite at any time: in the filament dialog, with the `number` entity, or with the **add spool** button.

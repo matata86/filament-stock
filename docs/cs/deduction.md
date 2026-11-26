@@ -27,6 +27,25 @@ Volba **Přirážka na odpad (purge, nepovedené starty)** (výchozí 5 %) se p�
 
 Když filament klesne pod **Práh nízkého stavu** (výchozí 300 g), vznikne trvalé oznámení „Dochází filament“ a jeho `binary_sensor` `…_dochazi` se zapne. Oznámení vznikne jednou, ve chvíli, kdy sklad práh překročí.
 
+## Cívka ve slotu a kontrola při startu tisku
+
+Sklad neví, která cívka je v AMS. Počítá s tím, že sklad jsou celé cívky a jedna načatá a že ve slotu je ta načatá: při 3092 g na skladě a **Hmotnosti nové cívky** 1000 g je ve slotu 92 g. Když sklad vychází na celé cívky, je ve slotu plná. Když je jeden filament ve dvou slotech, první slot (podle názvu) má načatou cívku a další plnou, dokud sklad stačí. Senzor `sensor.<zařízení>_<slot>` ukazuje tyto gramy u každého slotu AMS i externí cívky.
+
+Když tisk začne a přijdou gramy po slotech, porovná se úloha jednou s těmito cívkami, včetně přirážky na odpad, u vícebarevného tisku pro každý filament. Počítá se i slot se stejným filamentem, který úloha nepoužívá, protože z něj pokračuje automatické doplnění AMS. Když některý filament nestačí, vznikne trvalé oznámení „Filament v AMS nemusí stačit“ a spustí se událost `filament_stock_shortage` s `title`, `message` a `items` (`item`, `label`, `needed`, `loaded`, `slots`). Tisk bez gramů po slotech (spuštěný z displeje tiskárny) se nekontroluje.
+
+Upozornění do telefonu přidáš automatizací:
+
+```yaml
+triggers:
+  - trigger: event
+    event_type: filament_stock_shortage
+actions:
+  - action: notify.mobile_app_<tvuj_telefon>
+    data:
+      title: "{{ trigger.event.data.title }}"
+      message: "{{ trigger.event.data.message }}"
+```
+
 ## Opravy
 
 Stav skladu je číslo, které můžeš kdykoli přepsat: v dialogu filamentu, entitou `number` nebo tlačítkem **přidat cívku**.
