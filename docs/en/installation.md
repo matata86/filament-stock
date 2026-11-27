@@ -8,6 +8,16 @@
 
 ## Install with HACS
 
+Filament Stock is in the HACS default catalog.
+
+1. In HACS search for **Filament Stock**.
+2. Open it and click **Download**.
+3. Restart Home Assistant.
+
+### As a custom repository
+
+If it does not show up in the search (for example an older HACS):
+
 1. In HACS open the three-dot menu and **Custom repositories**.
 2. Add `https://github.com/matata86/filament-stock` with category **Integration**.
 3. Find **Filament Stock** and click **Download**.

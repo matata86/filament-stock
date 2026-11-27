@@ -8,6 +8,16 @@
 
 ## Instalace přes HACS
 
+Filament Stock je ve výchozím katalogu HACS.
+
+1. V HACS vyhledej **Filament Stock**.
+2. Otevři ji a klikni na **Stáhnout** (Download).
+3. Restartuj Home Assistant.
+
+### Jako vlastní repozitář
+
+Pokud se ve vyhledávání neukáže (třeba ve starším HACS):
+
 1. V HACS otevři menu se třemi tečkami a **Vlastní repozitáře** (Custom repositories).
 2. Přidej `https://github.com/matata86/filament-stock` s kategorií **Integrace** (Integration).
 3. Najdi **Filament Stock** a klikni na **Stáhnout** (Download).

@@ -39,11 +39,12 @@ A filament stock in grams for Bambu Lab printers in Home Assistant. After every 
 
 ## Installation
 
-HACS:
+HACS (default catalog):
 
-1. In HACS open the three-dot menu, **Custom repositories**, add `https://github.com/matata86/filament-stock` with category **Integration**.
-2. Find **Filament Stock** and **Download** it.
-3. Restart Home Assistant.
+1. In HACS search for **Filament Stock** and **Download** it.
+2. Restart Home Assistant.
+
+If it does not show up in the search, add it as a custom repository: three-dot menu, **Custom repositories**, `https://github.com/matata86/filament-stock` with category **Integration**, then download it as above.
 
 Manually: copy `custom_components/filament_stock` into `/config/custom_components/` and restart Home Assistant.
 
